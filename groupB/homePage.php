@@ -159,7 +159,6 @@ body {
     </style>
 </head>
 <body>
-<<<<<<< Updated upstream
 
     <div id="wrapper">
         <div class="logo-banner-wrapper">
@@ -259,10 +258,6 @@ body {
                 <div class="board-item">ブランド</div>
             </div>
         </main>
-=======
-    <div name="Image.Ad">
-        <img src="">
->>>>>>> Stashed changes
     </div>
 
     <script>

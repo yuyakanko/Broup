@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <title>オタグッズ - ログイン</title>
-<link rel="stylesheet" href="login.css">
+<link rel="stylesheet" href="css/ログイン画面.css">
 </head>
 
 <body>

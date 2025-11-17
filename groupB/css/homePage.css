@@ -1,10 +1,16 @@
-/* style.css */
+/* css/homePage.css */
 
 /* フォント設定 */
 body {
     font-family: 'M PLUS Rounded 1c', sans-serif, 'Meiryo', sans-serif;
     margin: 0;
     background-color: white; /* 全体の背景色を白に変更 */
+}
+
+/* ★ ヘッダーとの重なり対策の修正 */
+#wrapper {
+    /* ヘッダー (約 80px〜90px) の高さに合わせて、コンテンツ全体を押し下げる */
+    margin-top: 100px; 
 }
 
 .container {
@@ -18,29 +24,40 @@ body {
     /* バナー全体の余白と角丸を管理する外側のラッパー */
     padding: 20px; /* 全体に余白を追加 */
     background-color: white; /* 余白部分の背景色も白 */
+    /* margin-top の大きな値は #wrapper に移動済み */
 }
 
+/* css/homePage.css */
+
 .logo-banner-image {
-    height: 180px; /* 画像全体が見えるように高さを調整 */
+    height: 180px;
     width: 100%;
-    margin: 0 auto; 
+    margin: 0 auto;
     
-    background-color: #feeb42; /* バナーの背景色 */
+    background-color: #feeb42; 
     
-    border-radius: 15px; /* 角を丸くする */
+    border-radius: 15px; 
     overflow: hidden; 
     
-    /* 提供された画像ファイルを背景として挿入 */
-    background-image: url('image/logo_banner.png'); 
-    background-size: contain; /* 画像がバナー領域内に完全に収まるようにする */
-    background-position: center; /* 画像を中央に配置 */
+    /* ★★★ ここをプロジェクト内のファイル名に修正しました ★★★ */
+    background-image: url('../image/logo_banner.png'); 
+    /* ---------------------------------------------------- */
+    
+    background-size: contain;
+    background-position: center;
     background-repeat: no-repeat; 
     
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* 少し影をつけて立体感を出す */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
 }
 
 
 /* --- 2. おすすめ商品セクション --- */
+.welcome-message {
+    font-size: 1.2em;
+    color: #333;
+    margin-bottom: 15px;
+}
+
 .section-title {
     font-size: 1.5em;
     font-weight: bold;
@@ -112,8 +129,6 @@ body {
 /* いいねされたときのスタイル (JavaScriptで付与される) */
 .heart-icon.liked {
     color: #ff5252; /* 赤色 */
-    /* 塗りつぶしハート（♥）に切り替える。このCSSでは見た目の色変更のみ。
-       文字の切り替えはJavaScriptで行うため、contentの指定は削除。 */
 }
 
 

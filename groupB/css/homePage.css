@@ -24,10 +24,7 @@ body {
     /* バナー全体の余白と角丸を管理する外側のラッパー */
     padding: 20px; /* 全体に余白を追加 */
     background-color: white; /* 余白部分の背景色も白 */
-    /* margin-top の大きな値は #wrapper に移動済み */
 }
-
-/* css/homePage.css */
 
 .logo-banner-image {
     height: 180px;
@@ -39,9 +36,8 @@ body {
     border-radius: 15px; 
     overflow: hidden; 
     
-    /* ★★★ ここをプロジェクト内のファイル名に修正しました ★★★ */
+    /* バナー画像の指定 */
     background-image: url('../image/logo_banner.png'); 
-    /* ---------------------------------------------------- */
     
     background-size: contain;
     background-position: center;
@@ -75,70 +71,95 @@ body {
     border: 1px solid #ddd;
     border-radius: 5px;
     overflow: hidden;
-    padding: 5px;
-    box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    padding: 0; /* paddingを削除 */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column; 
+    height: 100%;
+    transition: box-shadow 0.2s;
+}
+
+.product-item:hover {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
 }
 
 .product-image {
-    background-color: #ccc; /* 画像のプレースホルダー */
+    background-color: #f8f8f8; 
     height: 150px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 5px;
+    margin-bottom: 0; 
+    position: relative;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* アスペクト比を維持してコンテナに収める */
+    display: block;
 }
 
 .product-image::after {
-    content: ''; 
-    display: block;
-    width: 80%;
-    height: 80%;
-    background-color: #aaa;
-    border-radius: 5px;
+    content: none; /* 不要な疑似要素を削除 */
 }
+
 
 .product-info {
     position: relative;
-    padding: 5px;
+    padding: 8px 10px; /* 上下左右のパディングを調整 */
     font-size: 0.9em;
+    flex-grow: 1; 
 }
 
+/* ★★★ 修正箇所: product-info 内の float をクリアする（画像に重ならないようにする） ★★★ */
+.product-info::after {
+    content: "";
+    display: table;
+    clear: both; 
+}
+/* ★★★ ここまで ★★★ */
+
 .price {
-    font-weight: bold;
+    font-weight: 900; 
     color: #333;
     display: block;
-    float: left;
+    float: left; /* 価格は左に float */
     font-size: 1.1em;
+    line-height: 1.2; 
+    margin-top: 2px;
 }
 
 /* --- ハートアイコンのスタイル --- */
 .heart-icon {
-    float: right;
-    font-size: 1.2em;
+    float: right; /* ハートアイコンは右に float */
+    font-size: 1.4em; 
     cursor: pointer; 
-    line-height: 1;
-    color: #666; /* 初期の色はグレー */
-    transition: color 0.1s; /* 色変更をスムーズに */
+    line-height: 1.2;
+    color: #ccc; 
+    transition: color 0.1s; 
 }
 
-/* ホバー時のスタイル（クリックと区別するため、少し薄い色に） */
+/* ホバー時のスタイル */
 .heart-icon:hover {
     color: #aaa; 
 }
 
-/* いいねされたときのスタイル (JavaScriptで付与される) */
+/* いいねされたときのスタイル */
 .heart-icon.liked {
-    color: #ff5252; /* 赤色 */
+    color: #ff5252; 
 }
 
 
 .description {
-    clear: both;
+    clear: both; /* ★★★ 修正箇所: floatの影響を断ち切り、新しい行から開始させる ★★★ */
     font-size: 0.8em;
     color: #666;
     margin: 5px 0 0 0;
-    height: 2.4em; 
-    overflow: hidden;
+    height: auto; 
+    overflow: visible;
+    line-height: 1.3;
 }
 
 
@@ -149,17 +170,23 @@ body {
 
 .board-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 1行に4列 */
+    grid-template-columns: repeat(4, 1fr); 
     gap: 20px;
     text-align: center;
 }
 
 .board-item {
-    background-color: white;
+    background-color: white; /* 白い背景に戻す */
     border: none; 
-    border-radius: 5px;
-    padding: 50px 10px;
-    font-weight: bold;
+    border-radius: 8px; 
+    padding: 30px 10px; 
+    font-weight: 700;
     font-size: 1.1em;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease; 
+}
+
+.board-item:hover {
+    transform: translateY(-3px); 
+    box-shadow: 0 6px 10px rgba(0,0,0,0.15); 
 }

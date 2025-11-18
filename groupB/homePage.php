@@ -1,6 +1,8 @@
 <?php
 // 1. セッションを開始
 session_start();
+require 'データベース.php';
+
 
 // 2. ログイン状態の確認
 $is_logged_in = isset($_SESSION['customer']);
@@ -40,18 +42,21 @@ if ($is_logged_in) {
 
             <h2 class="section-title">おすすめ</h2>
             <div class="product-grid">
-                <?php for ($i = 0; $i < 10; $i++): ?>
-                <div class="product-item">
-                    <div class="product-image"></div>
-                    <div class="product-info">
-                        <span class="price">¥ 500</span>
-                        <span class="heart-icon">♡</span>
-                        <p class="description">ああああああああああああああああ...</p>
-                    </div>
-                </div>
-                <?php endfor; ?>
+                <?php 
+                $pdo=new PDO($connect, USER, PASS);
+                $sql=$pdo->query('select * from item_information');
+                foreach ($sql as $row) {
+                    echo '<div class="product-item">';
+                    echo '<div class="product-image"><img alt="商品画像" src="image/' . htmlspecialchars($row['item_id']) . '.jpg"></div>';
+                      echo '<div class="product-info">';
+                       echo '<span class="price">￥  '. htmlspecialchars($row['product_price']) .'</span>';
+                       echo '<span class="heart-icon">♡</span>';
+                       echo '<p class="description">'. htmlspecialchars($row['product_description']) .'</p>';
+                      echo '</div>';
+                    echo '</div>';
+                }
+                ?>
             </div>
-
             <h2 class="section-title board-title">掲示板</h2>
             <div class="board-grid">
                 <div class="board-item">ゲーム</div>

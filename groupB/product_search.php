@@ -1,11 +1,3 @@
-<?php
-    const SERVER = 'mysql327.phy.lolipop.lan';
-    const DBNAME = 'LAA1607651-system';
-    const USER = 'LAA1607651';
-    const PASS = 'asosd2cb';
-
-    $const = 'mysql:host='.SERVER.';dbname='.DBNAME.';charaset=utf8';
-?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -19,115 +11,44 @@
 <body>
     <div>
         <?php require "header3.php"?>
+        <?php require "データベース.php"?>
     </div>
     <a href="#" class="horma">＜ホームへ</a><br>
     <h1>検索結果</h1>
+    <?php 
+        if(isset($_POST['search'])){
+            $search = $_POST['search'];
+            $pdo = new PDO ($connect , USER , PASS);
+            $sql=$pdo->prepare("SELECT * FROM item_information WHERE product_name LIKE ?");
+            $sql->execute(["%".$_POST['search']."%"]);
+        }
+    ?>
     <div class="product-list">
-        <div class="product-card">
-            <div class="product-image">
-                <img src="image/image1.jpg">
-            </div>
-            <div class="product-price">¥500 
-                <span class="heart">
-                    <button class="favorite-btn">
-                        <i class="fa fa-heart"></i>
-                    </button>
-                </span>
-            </div>
-            <div class="product-description">
-                商品説明
-            </div>
-        </div>
-        <div class="product-card">
-            <div class="product-image">
-                <img src="image/image2.jpg">
-            </div>
-            <div class="product-price">¥500
-                <span class="heart">
-                    <button class="favorite-btn">
-                        <i class="fa fa-heart"></i>
-                    </button>
-                </span>
-            </div>
-            <div class="product-description">
-                商品説明
-            </div>
-        </div>
-        <div class="product-card">
-            <div class="product-image">
-                <img src="image/image1.jpg">
-            </div>
-            <div class="product-price">¥500 
-                <span class="heart">
-                    <button class="favorite-btn">
-                        <i class="fa fa-heart"></i>
-                    </button>
-                </span>
-            </div>
-            <div class="product-description">
-                商品説明
-            </div>
-        </div>
-        <div class="product-card">
-            <div class="product-image">
-                <img src="image/image3.jpg">
-            </div>
-            <div class="product-price">¥500 
-                <span class="heart">
-                    <button class="favorite-btn">
-                        <i class="fa fa-heart"></i>
-                    </button>
-                </span>
-            </div>
-            <div class="product-description">
-                商品説明
-            </div>
-        </div>
-        <div class="product-card">
-            <div class="product-image">
-                <img src="image/image2.jpg">
-            </div>
-            <div class="product-price">¥500 
-                <span class="heart">
-                    <button class="favorite-btn">
-                        <i class="fa fa-heart"></i>
-                    </button>
-                </span>
-            </div>
-            <div class="product-description">
-                商品説明
-            </div>
-        </div>
-        <div class="product-card">
-            <div class="product-image">
-                <img src="image/image2.jpg">
-            </div>
-            <div class="product-price">¥500 
-                <span class="heart">
-                    <button class="favorite-btn">
-                        <i class="fa fa-heart"></i>
-                    </button>
-                </span>
-            </div>
-            <div class="product-description">
-                商品説明
-            </div>
-        </div>
-        <div class="product-card">
-            <div class="product-image">
-                <img src="image/image1.jpg">
-            </div>
-            <div class="product-price">¥500 
-                <span class="heart">
-                    <button class="favorite-btn">
-                        <i class="far fa-heart"></i>
-                    </button>
-                </span>
-            </div>
-            <div class="product-description">
-                商品説明
-            </div>
-        </div>
+        <?php
+            foreach($sql as $key){
+                $mysql=$pdo->prepare("SELECT * FROM product_image WHERE item_id = ?");
+                $mysql->execute([$key['item_id']]);
+                echo '<div class="product-card">';
+                    foreach($mysql as $row){
+                        echo '<div class="product-image">';
+                            echo '<img src="',$row['product_path'],'">';
+                        echo '</div>';
+                        break;
+                    }
+                    echo '<div class="product-price">¥',$key['product_price'],' ';
+                        echo '<span class="heart">';
+                            echo '<button class="favorite-btn">';
+                                echo '<i class="fa fa-heart"></i>';
+                            echo '</button>';
+                        echo '</span>';
+                    echo '</div>';
+                    echo '<div class="product-description">';
+                        echo '商品説明';
+                        echo '';
+                    echo '</div>';
+                echo '</div>';
+            }
+        ?>
     </div>
     <script>
         document.querySelectorAll('.favorite-btn').forEach(btn => {

@@ -3,7 +3,7 @@ nav {
     top: 0;
     left: 0;
     width: 100%;
-    background-color: #FFFF00;
+    background-color: #FFFF80;
     padding: 8px 20px;
     z-index: 1000;
     display: flex;
@@ -61,10 +61,9 @@ input[type="search"] {
 }
 
 .image{
-	width: fit-content;
-	display: block;
+    display: block;
+	align-items: center;
 	padding: 5px;
-	margin-bottom: 15px;
 }
 
 .image img{
@@ -78,7 +77,7 @@ input[type="search"] {
 }
 
 .button{
-	margin-bottom: 15px;
+    margin-top: 15px;
 	margin-right: 30px;
 	padding: 5px;
 	background-color: #FF0000;

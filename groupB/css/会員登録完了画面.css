@@ -1,0 +1,46 @@
+/* 画面中央に配置するコンテナ */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh; /* 画面の高さに応じて中央に配置 */
+}
+
+/* メッセージとボタンのラッパー */
+.content {
+    text-align: center;
+    padding: 40px;
+    background-color: #fff;
+    border-radius: 8px;
+}
+
+/* メインメッセージ */
+.message-main {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* サブメッセージ */
+.message-sub {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+/* 赤いボタンのスタイル */
+.button {
+    display: inline-block;
+    background-color: red;
+    color: white;
+    text-decoration: none;
+    padding: 10px 30px;
+    font-size: 16px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: #cc0000;
+}

@@ -1,11 +1,12 @@
+<?php session_start(); ?>
 <!doctype html>
 <html lang="ja">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>出品フォーム（ワイヤー再現）</title>
+<title>出品フォーム（統合版）</title>
 <style>
- :root{
+  :root{
    --accent:#4DE07A;
    --muted:#eee;
    --border:#cfcfcf;
@@ -108,76 +109,79 @@
 </style>
 </head>
 <body>
+<form action="listing_intermediate_process.php" method="POST" enctype="multipart/form-data" id="product-form">
 <div class="container" role="main">
 <!-- 左：画像 -->
 <div class="left" aria-label="画像アップロード">
 <div class="drop-hint">
 <a href="homePage.html" style="text-decoration:none;color:#666;font-weight:700;">&lt; ホームへ</a><br>
-  画像アイコンタップで画像を選択（最大四枚）
+画像アイコンタップで画像を選択（最大四枚）
 </div>
- 
-<!-- 4スロット -->
-<div class="image-slot" data-index="0">
-<span class="icon">🖼️</span>
-</div>
-<div class="image-slot" data-index="1">
-<span class="icon">🖼️</span>
-</div>
-<div class="image-slot" data-index="2">
-<span class="icon">🖼️</span>
-</div>
-<div class="image-slot" data-index="3">
-<span class="icon">🖼️</span>
-</div>
+
+<!-- 画像スロット -->
+<div class="image-slot" data-index="0"><span class="icon">🖼️</span></div>
+<div class="image-slot" data-index="1"><span class="icon">🖼️</span></div>
+<div class="image-slot" data-index="2"><span class="icon">🖼️</span></div>
+<div class="image-slot" data-index="3"><span class="icon">🖼️</span></div>
 <div class="small-note">タップで画像を選択、ドラッグ&ドロップ可。最大4枚まで。</div>
+
 <!-- hidden file input -->
-<input id="file-input" type="file" accept="image/*" multiple class="hidden" />
+<input id="file-input" type="file" name="image[]" accept="image/*" multiple hidden>
 </div>
+
 <!-- 右：フォーム -->
-<form class="right" id="product-form" novalidate>
+<div class="right" novalidate>
 <div class="form-title">商品出品</div>
+
 <div class="field">
 <label for="name">商品名</label>
-<input id="name" type="text" maxlength="20" placeholder="例：レトロゲームソフト" required />
+<input id="name" name="name" type="text" maxlength="20" placeholder="例：レトロゲームソフト" required />
 <div class="char-count" id="name-count">0/20</div>
 </div>
+
 <div class="field">
 <label for="price">販売価格</label>
 <div class="price-row">
-<input id="price" type="number" min="300" max="99999" step="1" placeholder="300" required />
+<input id="price" name="number" type="number" min="300" max="99999" step="1" placeholder="300" required />
 <div style="min-width:48px;text-align:right;font-weight:700;">円</div>
 </div>
 <div class="price-hint" id="price-hint">¥300〜¥99,999まで可能</div>
 </div>
+
 <div class="field">
 <label for="genre">ジャンル</label>
-<select id="genre" class="genre" size="4">
-<option>ゲーム</option>
-<option>アニメ</option>
-<option>アイドル</option>
-<option>ブランド</option>
+<select id="genre" name="gener" class="genre" size="4" required>
+<option value="1">ゲーム</option>
+<option value="2">アニメ</option>
+<option value="3">アイドル</option>
+<option value="4">ブランド</option>
 </select>
 </div>
+
 <div class="field">
 <label for="desc">商品説明</label>
-<textarea id="desc" rows="3" maxlength="140" placeholder="状態・付属品などを詳しく"></textarea>
+<textarea id="desc" name="description" rows="3" maxlength="140" placeholder="状態・付属品などを詳しく"></textarea>
 <div class="char-count" id="desc-count">0/140</div>
 </div>
+
 <div class="field">
 <label for="condition">商品状態</label>
-<textarea id="condition" rows="2" maxlength="40" placeholder="例：目立つ傷なし"></textarea>
+<textarea id="condition" name="status" rows="2" maxlength="40" placeholder="例：目立つ傷なし"></textarea>
 <div class="char-count" id="cond-count">0/40</div>
 </div>
+
 <div class="submit-wrap">
 <button type="submit" class="btn-submit">出品</button>
 <div id="form-error" class="error hidden">* エラーメッセージ</div>
 </div>
-</form>
 </div>
+</div>
+</form>
 <script>
- // --- 画像アップロード（最大4枚・プレビュー） ---
+  // --- 画像アップロード（最大4枚・プレビュー） ---
  const fileInput = document.getElementById('file-input');
  const slots = Array.from(document.querySelectorAll('.image-slot'));
+ let imageFiles = [null, null, null, null]; // ← Fileオブジェクトを保持
  let images = [null,null,null,null]; // FileまたはdataURL
  // slotクリックでファイル選択（複数）／ドラッグも対応
  slots.forEach(slot=>{
@@ -199,30 +203,36 @@
  fileInput.addEventListener('change', e=>{
    const files = Array.from(e.target.files);
    handleFiles(files);
-   fileInput.value = ""; // 同じファイル選び直し対応
  });
- function handleFiles(files){
-   if(!files.length) return;
-   // startIndex indicates where to place first selected
-   let start = fileInput.dataset.startIndex ? Number(fileInput.dataset.startIndex) : 0;
-   for(const f of files){
-     if(!f.type.startsWith('image/')) continue;
-     // find next free slot starting at start
-     let i = start;
-     while(i<4 && images[i]!==null) i++;
-     if(i>=4){
-       alert('最大4枚までです。');
-       break;
-     }
-     const reader = new FileReader();
-     reader.onload = (ev)=>{
-       images[i] = ev.target.result; // dataURL
-       renderSlot(i);
-     };
-     reader.readAsDataURL(f);
-     start = i+1;
-   }
- }
+function handleFiles(files){
+  if(!files.length) return;
+  let start = fileInput.dataset.startIndex ? Number(fileInput.dataset.startIndex) : 0;
+  for(const f of files){
+    if(!f.type.startsWith('image/')) continue;
+    let i = start;
+    while(i < 4 && imageFiles[i] !== null) i++;
+    if(i >= 4){
+      alert('最大4枚までです。');
+      break;
+    }
+    imageFiles[i] = f; // ← Fileオブジェクトを保存
+    const reader = new FileReader();
+    reader.onload = (ev)=>{
+      images[i] = ev.target.result;
+      renderSlot(i);
+    };
+    reader.readAsDataURL(f);
+    start = i + 1;
+  }
+
+  // ← ここで fileInput.files を更新
+  const dt = new DataTransfer();
+  for (const f of imageFiles) {
+    if (f) dt.items.add(f);
+  }
+  fileInput.files = dt.files;
+}
+
  function renderSlot(i){
    const slot = slots[i];
    slot.innerHTML = '';
@@ -244,11 +254,19 @@
    btn.style.cursor='pointer';
    btn.style.fontWeight='700';
    btn.addEventListener('click', (e)=>{
-     e.stopPropagation();
-     images[i]=null;
-     slot.innerHTML = '<span class="icon">🖼️</span>';
-   });
-   slot.appendChild(btn);
+  e.stopPropagation();
+  images[i] = null;
+  imageFiles[i] = null;
+  slot.innerHTML = '<span class="icon">🖼️</span>';
+
+  // 再構築
+  const dt = new DataTransfer();
+  for (const f of imageFiles) {
+    if (f) dt.items.add(f);
+  }
+  fileInput.files = dt.files;
+});
+
  }
  // --- 文字数カウント ---
  const nameInput = document.getElementById('name');
@@ -317,7 +335,8 @@ const data = {
  const params = new URLSearchParams(data).toString();
 
  // 確認画面へ遷移
- window.location.href = `product_listing_confirmation.php?${params}`;
+ form.submit();
+ //window.location.href = `product_listing_confirmation.php?${params}`;
  // --- ここまで変更 ---
 
 

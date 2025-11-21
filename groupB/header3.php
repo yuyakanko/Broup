@@ -12,7 +12,7 @@ $button_link = 'logout.php'; // ログアウトボタンは logout.php を指す
         <div class="logo-area">
             <img src="image/アイコン1.png" alt="アイコン">
             <span>オタグッズ</span>
-            <input type="search" placeholder="探し物">
+            <input type="search" placeholder="探し物" name="search">
         </div>
     </div>
 

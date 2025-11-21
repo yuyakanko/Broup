@@ -14,7 +14,7 @@
             		<span>オタグッズ</span>
         		</div>
         		<div class="serach-area">
-        			<input type="search" placeholder="探し物">
+        			<input type="search" placeholder="探し物" name="search">
         		</div>
         	</div>
         	<div class="right-items">

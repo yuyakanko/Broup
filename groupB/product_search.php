@@ -26,7 +26,7 @@
     <div class="product-list">
         <?php
             foreach($sql as $key){
-                $mysql=$pdo->prepare("SELECT * FROM product_image WHERE item_id = ?");
+                $mysql=$pdo->prepare("SELECT * FROM product_image WHERE sort_order = 1 AND item_id = ?");
                 $mysql->execute([$key['item_id']]);
                 echo '<div class="product-card">';
                     foreach($mysql as $row){
@@ -44,7 +44,7 @@
                     echo '</div>';
                     echo '<div class="product-description">';
                         echo '商品説明';
-                        echo '';
+                        echo '<p>',$key['product_description'],'</p>';
                     echo '</div>';
                 echo '</div>';
             }

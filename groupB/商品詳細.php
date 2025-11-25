@@ -1,8 +1,12 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="css/header1.css?ver=2">
 <title>商品詳細</title>
 <style>
   body { font-family: sans-serif; background:#fafafa; }
@@ -22,7 +26,11 @@
   .details h1 { font-size:24px; margin-bottom:10px; }
   .price { font-size:18px; margin-bottom:20px; }
 
-  .btns button { margin-right:10px; padding:8px 15px; border:none; border-radius:15px; cursor:pointer; }
+  .btns form{
+    display: inline-block;
+    margin: 0;
+  }
+  .btns form button { margin-right:10px; padding:8px 15px; border:none; border-radius:15px; cursor:pointer; }
   .cart { background:#6cf58a; }
   .buy { background:#84c6ff; }
 
@@ -31,64 +39,108 @@
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="image-box">
+  <?php require 'header1.php'?>
+  <?php require "データベース.php"?>
+  <?php
+    $pdo=new PDO($connect, USER , PASS);
+    if($_GET['item_id']){
+      $item_id = $_GET['item_id'];
+      $sql=$pdo->prepare('SELECT * FROM item_information WHERE item_id = ?');
+      $sql->execute([$item_id]);
+      $item = $sql->fetch();
+
+      if(isset($item)){
+        $gener=$pdo->prepare('SELECT * FROM genre WHERE genre_id = ?');
+        $gener->execute([$item['genre_id']]);
+        $genre = $gener->fetch();
+      }
+    }
+  ?>
+  <div class="container">
+    <div class="image-box">
     <div class="nav-left"><</div>
     <div class="nav-right">></div>
-    <img src="" alt="商品画像" width="100" />
-    <div class="count">1/4</div>
+      <img src="" alt="商品画像" width="100" />
+    <div class="count"></div>
   </div>
 
   <div class="details">
-    <h1>商品名</h1>
-    <div class="price">値段（￥500）</div>
+    <?php
+      if(isset($item)){
+        echo  '<h1>',$item['product_name'],'</h1>';
+
+        echo '<div class="price">値段（￥',$item['product_price'],'）</div>';
+      }
+    ?>
 
     <div class="btns">
-      <button class="cart">カートへ</button>
-      <button class="buy">購入手続きへ</button>
+      <form action="#" method="POST">
+        <button class="cart">カートへ</button>
+      </form>
+      <form action="購入予定.php" method="POST">
+        <button class="buy">購入手続きへ</button>
+      </form>
     </div>
 
     <div class="section">
-      <strong>ジャンル</strong>　ゲーム
+      <?php
+        if(isset($genre)){
+          echo '<strong>ジャンル</strong>　',$genre['genre_name'];
+        }
+      ?>
     </div>
 
     <div class="section">
       <strong>商品状態</strong><br />
-      <textarea placeholder="テキストエリア"></textarea>
+      <?php
+        if(isset($item)){
+          echo '<textarea placeholder="テキストエリア">',$item['product_description'],'</textarea>';
+        }
+      ?>
     </div>
 
     <div class="section">
       <strong>商品説明</strong><br />
-      <textarea placeholder="テキストエリア"></textarea>
+      <?php
+        if(isset($item)){
+          echo '<textarea placeholder="テキストエリア">',$item['product_state'],'</textarea>';
+        }
+      ?>
     </div>
   </div>
 </div>
 
 <script>
 // 商品画像配列（好きな画像URLを入れて）
-const images = [
-  "https://via.placeholder.com/300?text=1",
-  "https://via.placeholder.com/300?text=2",
-  "https://via.placeholder.com/300?text=3",
-  "https://via.placeholder.com/300?text=4"
-];
+const images = <?php
+  if($_GET['item_id']){
+    $mysql=$pdo->prepare('SELECT * FROM product_image WHERE item_id = ?');
+    $mysql->execute([$item_id]);
+    foreach($mysql as $key){
+      $paths [] = $key['product_path'];
+    }
 
+    echo json_encode($paths, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+  }
+?>;
+</script>
+<script>
 let index = 0;
 const imgTag = document.querySelector('.image-box img');
 const countTag = document.querySelector('.image-box .count');
 imgTag.src = images[index];
-countTag.textContent = `${index+1}/4`;
+countTag.textContent = `${index+1}/${images.length}`;
 
 document.querySelector('.nav-left').onclick = () => {
   index = (index - 1 + images.length) % images.length;
   imgTag.src = images[index];
-  countTag.textContent = `${index+1}/4`;
+  countTag.textContent = `${index+1}/${images.length}`;
 };
 
 document.querySelector('.nav-right').onclick = () => {
   index = (index + 1) % images.length;
   imgTag.src = images[index];
-  countTag.textContent = `${index+1}/4`;
+  countTag.textContent = `${index+1}/${images.length}`;
 };
 </script>
 </body>

@@ -25,28 +25,35 @@
     ?>
     <div class="product-list">
         <?php
-            foreach($sql as $key){
-                $mysql=$pdo->prepare("SELECT * FROM product_image WHERE sort_order = 1 AND item_id = ?");
-                $mysql->execute([$key['item_id']]);
-                echo '<div class="product-card">';
-                    foreach($mysql as $row){
-                        echo '<div class="product-image">';
-                            echo '<img src="',$row['product_path'],'">';
+            if(isset($sql)){
+                foreach($sql as $key){
+                    $mysql=$pdo->prepare("SELECT * FROM product_image WHERE sort_order = 1 AND item_id = ?");
+                    $mysql->execute([$key['item_id']]);
+                    echo '<div class="product-card">';
+                        foreach($mysql as $row){
+                            echo '<div class="product-image">';
+                                echo '<a href="商品詳細.php?item_id=',$row['item_id'],'">';
+                                    echo '<img src="',$row['product_path'],'">';
+                                echo '</a>';
+                            echo '</div>';
+                            break;
+                        }
+                        echo '<div class="product-price">¥',$key['product_price'],' ';
+                            echo '<span class="heart">';
+                                echo '<button class="favorite-btn">';
+                                    echo '<i class="fa fa-heart"></i>';
+                                echo '</button>';
+                            echo '</span>';
                         echo '</div>';
-                        break;
+                        echo '<div class="product-description">';
+                            echo '商品説明';
+                            echo '<p>',$key['product_description'],'</p>';
+                        echo '</div>';
+                    echo '</div>';
                     }
-                    echo '<div class="product-price">¥',$key['product_price'],' ';
-                        echo '<span class="heart">';
-                            echo '<button class="favorite-btn">';
-                                echo '<i class="fa fa-heart"></i>';
-                            echo '</button>';
-                        echo '</span>';
-                    echo '</div>';
-                    echo '<div class="product-description">';
-                        echo '商品説明';
-                        echo '<p>',$key['product_description'],'</p>';
-                    echo '</div>';
-                echo '</div>';
+            }
+            else{
+                echo '検索された名が含まれる商品はありませんでした';
             }
         ?>
     </div>

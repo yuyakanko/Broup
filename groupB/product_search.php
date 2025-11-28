@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -9,10 +10,8 @@
     <title>商品検索</title>
 </head>
 <body>
-    <div>
-        <?php require "header3.php"?>
-        <?php require "データベース.php"?>
-    </div>
+    <?php require "header3.php"?>
+    <?php require "データベース.php"?>
     <a href="#" class="horma">＜ホームへ</a><br>
     <h1>検索結果</h1>
     <?php 
@@ -29,6 +28,10 @@
                 foreach($sql as $key){
                     $mysql=$pdo->prepare("SELECT * FROM product_image WHERE sort_order = 1 AND item_id = ?");
                     $mysql->execute([$key['item_id']]);
+                    $mtsql = $pdo->prepare("SELECT * FROM favorite WHERE item_id = ? AND user_id = ?");
+                    $mtsql->execute([$key['item_id'], $_SESSION['customer']['id'] ?? null]);
+                    $isboo = $mtsql->rowCount() > 0;
+                    $boois = $isboo ? 'fas' : 'far';
                     echo '<div class="product-card">';
                         foreach($mysql as $row){
                             echo '<div class="product-image">';
@@ -40,8 +43,8 @@
                         }
                         echo '<div class="product-price">¥',$key['product_price'],' ';
                             echo '<span class="heart">';
-                                echo '<button class="favorite-btn">';
-                                    echo '<i class="fa fa-heart"></i>';
+                                echo '<button class="favorite-btn" data-item-id="' .htmlspecialchars($key['item_id']) .'">';
+                                    echo '<i class="fa fa-heart '. $boois .'"></i>';
                                 echo '</button>';
                             echo '</span>';
                         echo '</div>';
@@ -59,18 +62,30 @@
     </div>
     <script>
         document.querySelectorAll('.favorite-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const icon = btn.querySelector('i');
-            if (icon.classList.contains('far')) {
-                icon.classList.remove('far');
-                icon.classList.add('fas');
-            } 
-            else{
-                icon.classList.remove('fas');
-                icon.classList.add('far');
-            }
+            btn.addEventListener('click', () => {
+                const icon = btn.querySelector('i');
+                const itemId = btn.getAttribute('data-item-id');
+
+                fetch('お気に入り追加.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `item_id=${itemId}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'added') {
+                        icon.classList.remove('far');
+                        icon.classList.add('fas');
+                    } else if (data.status === 'removed') {
+                        icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    }
+                    console.log(data);
+                });
+            });
         });
-    });
     </script>
 </body>
 </html>

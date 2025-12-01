@@ -26,7 +26,7 @@
                 </a>
             </div>
         	<div class="maindiv">
-            	<a href="#">
+            	<a href="ログイン画面.php">
                     <button class="button">ログアウト</button>
                 </a>
             </div>

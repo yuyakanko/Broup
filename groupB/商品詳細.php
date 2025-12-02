@@ -9,33 +9,124 @@ session_start();
 <link rel="stylesheet" href="css/header1.css?ver=2">
 <title>商品詳細</title>
 <style>
-  body { font-family: sans-serif; background:#fafafa; }
-  header { background:#f9f06b; padding:10px 20px; display:flex; align-items:center; justify-content:space-between; }
-  header .left { display:flex; align-items:center; gap:15px; }
-  header input { padding:5px 10px; width:200px; }
-  header .right button { background:#ff5555; border:none; padding:8px 15px; border-radius:20px; color:#fff; }
+  body { 
+    font-family: sans-serif; 
+    background:#fafafa; 
+  }
 
-  .container { display:flex; padding:30px; gap:40px; }
-  .image-box { width:350px; height:350px; background:#ddd; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; }
-  .image-box .nav-left, .image-box .nav-right { position:absolute; top:50%; transform:translateY(-50%); font-size:24px; cursor:pointer; }
-  .nav-left { left:10px; }
-  .nav-right { right:10px; }
+  header { 
+    background:#f9f06b; 
+    padding:10px 20px; 
+    display:flex; 
+    align-items:center; 
+    justify-content:space-between; 
+  }
 
-  .image-box .count { margin-top:20px; }
-  .details { flex:1; }
-  .details h1 { font-size:24px; margin-bottom:10px; }
-  .price { font-size:18px; margin-bottom:20px; }
+  header .left { 
+    display:flex; 
+    align-items:center; 
+    gap:15px; 
+  }
+
+  header input { 
+    padding:5px 10px; 
+    width:200px; 
+  }
+
+  header .right button { 
+    background:#ff5555; 
+    border:none; 
+    padding:8px 15px; 
+    border-radius:20px; 
+    color:#fff; 
+  }
+
+  .container { 
+    display:flex; 
+    padding:30px; 
+    gap:40px; 
+  }
+
+  .image-box { 
+    width:350px; 
+    height:350px; 
+    background:#ddd; 
+    display:flex; 
+    flex-direction:column; 
+    align-items:center; 
+    justify-content:center; 
+    position:relative; 
+  }
+
+  .image-box .nav-left, .image-box .nav-right { 
+    position:absolute; 
+    top:50%; 
+    transform:translateY(-50%); 
+    font-size:24px; cursor:pointer; 
+  }
+
+  .nav-left { 
+    left:10px; 
+  }
+
+  .nav-right { 
+    right:10px; 
+  }
+
+  .image-box .count { 
+    margin-top:20px; 
+  }
+
+  .details { 
+    flex:1; 
+  }
+
+  .details h1 { 
+    font-size:24px; 
+    margin-bottom:10px; 
+  }
+
+  .price { 
+    font-size:18px; 
+    margin-bottom:20px; 
+  }
 
   .btns form{
     display: inline-block;
     margin: 0;
   }
-  .btns form button { margin-right:10px; padding:8px 15px; border:none; border-radius:15px; cursor:pointer; }
-  .cart { background:#6cf58a; }
-  .buy { background:#84c6ff; }
 
-  .section { margin-top:20px; }
-  textarea { width:80%; height:60px; padding:10px; }
+  .btns form button { 
+    margin-right:10px; 
+    padding:8px 15px; 
+    border:none; 
+    border-radius:15px; 
+    cursor:pointer; 
+  }
+
+  .cart { 
+    background:#6cf58a; 
+  }
+
+  .buy { 
+    background:#84c6ff; 
+  }
+
+  .section { 
+    margin-top:20px; 
+  }
+
+  textarea { 
+    width:80%; 
+    height:60px; 
+    padding:10px; 
+  }
+
+  .hoa {
+    text-decoration: none;
+    color: #000000;
+  }
+
 </style>
 </head>
 <body>
@@ -53,9 +144,13 @@ session_start();
         $gener=$pdo->prepare('SELECT * FROM genre WHERE genre_id = ?');
         $gener->execute([$item['genre_id']]);
         $genre = $gener->fetch();
+
+        $sql = $pdo->prepare("UPDATE item_information SET view_times = view_times + 1 WHERE item_id = ?");
+        $sql->execute([$item_id]);
       }
     }
   ?>
+  <a href="homePage.php" class="hoa">＜ホームへ</a>
   <div class="container">
     <div class="image-box">
     <div class="nav-left"><</div>
@@ -67,17 +162,19 @@ session_start();
   <div class="details">
     <?php
       if(isset($item)){
-        echo  '<h1>',$item['product_name'],'</h1>';
+        echo  '<h1>',htmlspecialchars($item['product_name']),'</h1>';
 
-        echo '<div class="price">値段（￥',$item['product_price'],'）</div>';
+        echo '<div class="price">値段（￥',htmlspecialchars($item['product_price']),'）</div>';
       }
     ?>
 
     <div class="btns">
-      <form action="#" method="POST">
+      <form action="カート.php" method="POST">
+        <input type="hidden" name="cart_item" value="<?php echo $item_id?>">
         <button class="cart">カートへ</button>
       </form>
       <form action="購入予定.php" method="POST">
+        <input type="hidden" name="purchase_item" value="<?php echo $item_id?>">
         <button class="buy">購入手続きへ</button>
       </form>
     </div>
@@ -85,7 +182,7 @@ session_start();
     <div class="section">
       <?php
         if(isset($genre)){
-          echo '<strong>ジャンル</strong>　',$genre['genre_name'];
+          echo '<strong>ジャンル</strong>　',htmlspecialchars($genre['genre_name']);
         }
       ?>
     </div>
@@ -94,7 +191,7 @@ session_start();
       <strong>商品状態</strong><br />
       <?php
         if(isset($item)){
-          echo '<textarea placeholder="テキストエリア">',$item['product_description'],'</textarea>';
+          echo '<textarea placeholder="テキストエリア">',htmlspecialchars($item['product_description']),'</textarea>';
         }
       ?>
     </div>
@@ -103,7 +200,7 @@ session_start();
       <strong>商品説明</strong><br />
       <?php
         if(isset($item)){
-          echo '<textarea placeholder="テキストエリア">',$item['product_state'],'</textarea>';
+          echo '<textarea placeholder="テキストエリア">',htmlspecialchars($item['product_state']),'</textarea>';
         }
       ?>
     </div>

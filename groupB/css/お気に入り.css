@@ -1,0 +1,224 @@
+:root {
+  --bg: #f7f7f9;
+  --card: #ffffff;
+  --text: #222;
+  --muted: #666;
+  --primary: #e53935; /* 削除ボタンの赤 */
+  --border: #e5e7eb;
+  --brand: #0f172a;
+  --link: #2563eb;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ヘッダー */
+.header {
+  display: grid;
+  grid-template-columns: 1fr minmax(280px, 540px) auto;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 20px;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.back-link {
+  color: black;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.search {
+  display: flex;
+  gap: 8px;
+  justify-self: center;
+  width: 100%;
+}
+
+.search-input {
+  flex: 1;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 14px;
+}
+
+.search-input::placeholder {
+  color: #9aa0a6;
+}
+
+.search-btn {
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #f2f4f8;
+  color: #111;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.search-btn:hover {
+  background: #e9ecf3;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-self: end;
+}
+
+.logout-btn {
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #f7f7fb;
+}
+
+.brand {
+  font-weight: 700;
+  color: var(--brand);
+}
+
+/* メイン */
+.container {
+  max-width: 960px;
+  margin: 24px auto;
+  padding: 0 20px;
+}
+
+.page-title {
+  font-size: 22px;
+  margin: 0 0 16px;
+}
+
+/* お気に入りカードリスト */
+.favorites-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* 右寄せにする */
+  gap: 12px;
+}
+
+.favorite-item {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "thumb delete"
+    "thumb info";
+  gap: 8px 100px;
+  padding: 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  align-items: start;
+  width: fit-content; /* 中身に合わせる */
+  max-width: 100%; /* はみ出し防止 */
+}
+
+.item-thumb {
+  grid-area: thumb;
+  border-radius: 8px;
+  object-fit: cover;
+  background: #eceff4;
+  border: 1px solid var(--border);
+}
+
+.delete-btn {
+  grid-area: delete;
+  justify-self: start;
+  padding: 6px 12px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.item-info {
+  grid-area: info;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.item-name {
+  font-size: 16px;
+  margin: 0;
+}
+
+.item-price {
+  color: var(--muted);
+  margin: 0;
+}
+
+
+/* 削除ボタン */
+.delete-btn {
+  padding: 8px 14px;
+  margin-top: 50px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  filter: brightness(0.95);
+}
+
+@media (max-width: 720px) {
+  .header {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .header-actions {
+    justify-self: start;
+  }
+  .favorite-item {
+    grid-template-columns: 90px 1fr;
+    grid-template-areas:
+      "thumb info"
+      "delete delete";
+  }
+  .item-thumb {
+    width: 90px;
+    height: 60px;
+  }
+  .delete-btn {
+    grid-area: delete;
+    justify-self: end;
+    margin-top: 6px;
+  }
+}

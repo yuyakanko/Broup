@@ -1,3 +1,12 @@
+<?php 
+// homePage.php側で session_start() されている前提
+
+// ログイン状態をチェック
+$is_logged_in = isset($_SESSION['customer']);
+$display_name = $is_logged_in ? htmlspecialchars($_SESSION['customer']['name']) : '';
+$button_link = 'logout.php'; // ログアウトボタンは logout.php を指す
+?>
+
 
 <nav>
     <div class="new-row">
@@ -17,7 +26,7 @@
            		<img src="image/image.png">
            	</div>
         	<div class="maindiv">
-           		<form action="" method="POST">
+           		<form action="<?php echo $button_link; ?>" method="POST">
            			<button class="button">ログアウト</button>
            		</form>
         	</div>

@@ -54,7 +54,7 @@ if(isset($_GET['genre_id'])){
             <div class="product-grid">
                 <?php 
                 $customerid = $_SESSION['customer']['id'];
-                $sql=$pdo->prepare('SELECT * FROM item_information WHERE user_id = ? AND genre_id = ?');
+                $sql=$pdo->prepare('SELECT * FROM item_information WHERE user_id != ? AND genre_id = ?');
                 $sql->execute([$customerid,$genre_id]);
                 foreach ($sql as $row) {
                     $boo = false;

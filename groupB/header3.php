@@ -26,7 +26,7 @@ $button_link = 'logout.php'; // ログアウトボタンは logout.php を指す
 				<li><a href="ジャンル.php?genre_id=2">アニメ</a></li>
 				<li><a href="ジャンル.php?genre_id=3">アイドル</a></li>
 				<li><a href="ジャンル.php?genre_id=4">ブランド</a></li>
-				<li><button class="sell-button"><a href="product_listing.php">出品</a></button></li>
+				<li><a href="product_listing.php"><button class="sell-button">出品</button></a></li>
   			</ul>
 		</div>
     	<div class="right-items">

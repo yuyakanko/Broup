@@ -145,8 +145,10 @@ session_start();
         $gener->execute([$item['genre_id']]);
         $genre = $gener->fetch();
 
+        $pdo->beginTransaction();
         $sql = $pdo->prepare("UPDATE item_information SET view_times = view_times + 1 WHERE item_id = ?");
         $sql->execute([$item_id]);
+        $pdo->commit();
       }
     }
   ?>

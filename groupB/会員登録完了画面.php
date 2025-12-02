@@ -78,6 +78,16 @@ if (isset($_SESSION['customer'])) {
         $input_email,
         $input_zipcode
     ]);
+
+    $user_id = $pdo->lastInsertId();
+
+    $_SESSION['customer'] = [
+        'id' => $user_id,
+        'name' => $input_name,
+        'zipcode' => $input_zipcode,
+        'email' => $input_email,
+        'password' => $hashed_password
+    ];
 }
 ?>
 <!DOCTYPE html>

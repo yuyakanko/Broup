@@ -44,47 +44,49 @@ if ($is_logged_in) {
             <div class="product-grid">
                 <?php 
                 $pdo=new PDO($connect, USER, PASS);
-                $customerid = $_SESSION['customer']['id'];
-                $sql=$pdo->prepare('SELECT * FROM item_information WHERE user_id = ? ORDER BY view_times DESC');
-                $sql->execute([$customerid]);
-                foreach ($sql as $row) {
-                    $boo = false;
-                    $lisql=$pdo->prepare("SELECT * FROM buy_information WHERE item_id = ?");
-                    $lisql->execute([$row['item_id']]);
-                    if($lisql->rowCount() > 0){
-                        continue;
-                    }
-                    if(isset($_SESSION['cart'])){
-                        foreach($_SESSION['cart'] as $newkey => $value){
-                            if($row['item_id'] == $value['id']){
-                                $boo = true;
+                if(isset($_SESSION['customer'])){
+                    $customerid = $_SESSION['customer']['id'];
+                    $sql=$pdo->prepare('SELECT * FROM item_information WHERE user_id != ? ORDER BY view_times DESC');
+                    $sql->execute([$customerid]);
+                    foreach ($sql as $row) {
+                        $boo = false;
+                        $lisql=$pdo->prepare("SELECT * FROM buy_information WHERE item_id = ?");
+                        $lisql->execute([$row['item_id']]);
+                        if($lisql->rowCount() > 0){
+                            continue;
+                        }
+                        if(isset($_SESSION['cart'])){
+                            foreach($_SESSION['cart'] as $newkey => $value){
+                                if($row['item_id'] == $value['id']){
+                                    $boo = true;
+                                }
                             }
                         }
-                    }
-                    if($boo){
-                        continue;
-                    }
-                    $mysql=$pdo->prepare("SELECT * FROM product_image WHERE item_id = ?");
-                    $mysql->execute([$row['item_id']]);
-                    $item = $mysql->fetch();
+                        if($boo){
+                            continue;
+                        }
+                        $mysql=$pdo->prepare("SELECT * FROM product_image WHERE item_id = ?");
+                        $mysql->execute([$row['item_id']]);
+                        $item = $mysql->fetch();
 
-                    $mtsql = $pdo->prepare("SELECT * FROM favorite WHERE item_id = ? AND user_id = ?");
-                    $mtsql->execute([$row['item_id'], $customerid ?? null]);
-                    $isboo = $mtsql->rowCount() > 0;
-                    $boois = $isboo ? 'fas' : 'far';
+                        $mtsql = $pdo->prepare("SELECT * FROM favorite WHERE item_id = ? AND user_id = ?");
+                        $mtsql->execute([$row['item_id'], $customerid ?? null]);
+                        $isboo = $mtsql->rowCount() > 0;
+                        $boois = $isboo ? 'fas' : 'far';
 
-                    echo '<div class="product-item">';
-                    echo '<a href="商品詳細.php?item_id=',$row['item_id'],'">';
-                    echo '<div class="product-image"><img alt="商品画像" src="' . htmlspecialchars($item['product_path']) . '"></div>';
-                    echo '</a>';
-                        echo '<div class="product-info">';
-                            echo '<span class="price">￥  '. htmlspecialchars($row['product_price']) .'</span>';
-                            echo '<button class="favorite-btn" data-item-id="' .htmlspecialchars($row['item_id']) .'">';
-                                echo '<i class=" '.$boois.' fa-heart"></i>';
-                            echo '</button>';
-                            echo '<p class="description">'. htmlspecialchars($row['product_description']) .'</p>';
+                        echo '<div class="product-item">';
+                        echo '<a href="商品詳細.php?item_id=',$row['item_id'],'">';
+                        echo '<div class="product-image"><img alt="商品画像" src="' . htmlspecialchars($item['product_path']) . '"></div>';
+                        echo '</a>';
+                            echo '<div class="product-info">';
+                                echo '<span class="price">￥  '. htmlspecialchars($row['product_price']) .'</span>';
+                                echo '<button class="favorite-btn" data-item-id="' .htmlspecialchars($row['item_id']) .'">';
+                                    echo '<i class=" '.$boois.' fa-heart"></i>';
+                                echo '</button>';
+                                echo '<p class="description">'. htmlspecialchars($row['product_description']) .'</p>';
+                            echo '</div>';
                         echo '</div>';
-                    echo '</div>';
+                    }
                 }
                 ?>
             </div>

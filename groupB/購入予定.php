@@ -1,37 +1,71 @@
+<?php require "データベース.php"?>
 <?php
 // cart.php — 購入予定（カート）画面（スタンドアロン／PHP）
 session_start();
 mb_internal_encoding('UTF-8');
 
 // デモ用ダミーデータ初期化（本番はDBから読込）
-if (!isset($_SESSION['cart'])) {
-  $_SESSION['cart'] = [
-    ['id' => 'a1', 'name' => '商品A', 'price' => 500],
-    ['id' => 'b2', 'name' => '商品B', 'price' => 100],
-    ['id' => 'c3', 'name' => '商品C', 'price' => 600],
-  ];
-}
-
-// CSRF（簡易）
-if (empty($_SESSION['csrf'])) {
-  $_SESSION['csrf'] = bin2hex(random_bytes(16));
-}
-$csrf = $_SESSION['csrf'];
-
-// 削除処理
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $postCsrf = $_POST['csrf'] ?? '';
-  $action   = $_POST['action'] ?? '';
-  $id       = $_POST['id'] ?? '';
-  if (hash_equals($csrf, $postCsrf) && $action === 'remove' && $id !== '') {
-    $_SESSION['cart'] = array_values(array_filter($_SESSION['cart'], function($it) use ($id){
-      return $it['id'] !== $id;
-    }));
+//if (!isset($_SESSION['cart'])) {
+  //$_SESSION['cart'] = [
+    //['id' => 'a1', 'name' => '商品A', 'price' => 500, "img" => "image/image.png"],
+    //['id' => 'b2', 'name' => '商品B', 'price' => 100, "img" => "image/image.png"],
+    //['id' => 'c3', 'name' => '商品C', 'price' => 600, "img" => "image/image.png"],
+  //];
+//}
+  if(!isset($_SESSION['cart'])){
+    $_SESSION['cart'] =[];
   }
-  // PRG パターンで再読込
-  header('Location: '.$_SERVER['PHP_SELF']);
-  exit;
-}
+  $pdo=new PDO($connect, USER , PASS);
+  if(isset($_POST['purchase_item'])){
+    $purchase_item = $_POST['purchase_item'];
+  }
+
+  if(isset($_SESSION['cart']) && isset($purchase_item)){
+    $sql=$pdo->prepare("SELECT * FROM item_information WHERE item_id = ?");
+    $sql->execute([$purchase_item]);
+    $item = $sql->fetch(PDO::FETCH_ASSOC);
+
+    $nesql=$pdo->prepare("SELECT * FROM product_image WHERE item_id = ? AND sort_order = 1");
+    $nesql->execute([$purchase_item]);
+    $img = $nesql->fetch(PDO::FETCH_ASSOC);
+
+    $_SESSION['cart'][] = [
+      'id' => $item['item_id'],
+      'name' => $item['product_name'],
+      'price' => $item['product_price'],
+      'img' => $img['product_path'],
+    ];
+  }
+  if(isset($_POST['id']) && isset($_SESSION['cart'])){
+    $delete_id = $_POST['id'];
+    foreach($_SESSION['cart'] as $key => $value){
+      if($value['id'] == $delete_id){
+        unset($_SESSION['cart'][$key]);
+        $_SESSION['cart'] = array_values($_SESSION['cart']);
+      }
+    }
+  }
+  // CSRF（簡易）
+  if (empty($_SESSION['csrf'])) {
+    $_SESSION['csrf'] = bin2hex(random_bytes(16));
+  }
+  $csrf = $_SESSION['csrf'];
+
+  // 削除処理
+  //if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    //$postCsrf = $_POST['csrf'] ?? '';
+    //$action   = $_POST['action'] ?? '';
+    //$id       = $_POST['id'] ?? '';
+    //if (hash_equals($csrf, $postCsrf) && $action === 'remove' && $id !== '') {
+      //$_SESSION['cart'] = array_values(array_filter($_SESSION['cart'], function($it) use ($id){
+        //return $it['id'] !== $id;
+      //}));
+    //}
+    // PRG パターンで再読込
+    //header('Location: '.$_SERVER['PHP_SELF']);
+    //exit;
+  //}
+
 
 $items = $_SESSION['cart'];
 $total = array_sum(array_map(fn($i)=>$i['price'], $items));
@@ -42,6 +76,7 @@ function h($v){ return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/header1.css?ver=0">
   <title>購入予定（カート）</title>
   <style>
     :root{
@@ -84,7 +119,15 @@ function h($v){ return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
 
     .list{ clear:both; display:grid; gap:18px; }
     .item{ display:grid; grid-template-columns: 120px 1fr auto; gap:16px; align-items:center; padding:12px; border:1px solid var(--border); border-radius:6px; }
-    .thumb{ width:120px; height:120px; background:#ddd; border-radius:4px; display:grid; place-items:center; }
+    .thumb{ 
+      width:120px; 
+      height:120px; 
+      background:#ddd; 
+      border-radius:4px; 
+      display:grid; 
+      place-items:center;
+      overflow: hidden;
+    }
     .thumb svg{ width:56px; height:56px; color:#444 }
     .meta{ }
     .name{ font-size:20px; margin:0 0 6px; }
@@ -95,43 +138,45 @@ function h($v){ return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
     }
     .remove:hover{ background:var(--btn-red-h); }
 
-    .total{ text-align:right; margin-top:16px; color:#111; font-weight:700; }
+    .thumb img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .hoa {
+      text-decoration: none;
+      color: #000000;
+    }
+
+    .total{ 
+      text-align:right; 
+      margin-top:16px; color:#111; 
+      font-weight:700; 
+    }
+
   </style>
 </head>
 <body>
   <div class="app">
-    <div class="brandbar">
-      <div class="logo">♪</div>
-      <div class="brandname">オタグッズ</div>
-      <div class="toolbar" style="width:100%">
-        <div class="search">
-          <input type="text" placeholder="探し物" aria-label="探し物を検索">
-          <button aria-label="検索">🔍</button>
-        </div>
-        <button class="logout">ログアウト</button>
-      </div>
-    </div>
+    <?php require 'header1.php'?>
 
     <div class="content">
-      <div class="breadcrumb">&lt; ホームへ</div>
+      <div class="breadcrumb"><a href="homePage.php" class="hoa">&lt; ホームへ</a></div>
 
-      <div class="nextwrap">
-        <button class="next" onclick="alert('購入手続きへ（遷移先URLを設定）')">購入手続きへ</button>
-      </div>
+      <form class="nextwrap" action="商品購入.php" method="POST">
+        <button class="next" type="submit">購入手続きへ</button>
+      </form>
 
       <div class="list">
         <?php foreach ($items as $it): ?>
           <div class="item">
             <div class="thumb" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                <circle cx="8.5" cy="8.5" r="1.5"/>
-                <path d="M21 15l-5-5L5 21"/>
-              </svg>
+              <img src="<?php echo $it['img'] ?>">
             </div>
 
             <div class="meta">
-              <form method="post" style="float:right;margin-bottom:6px;">
+              <form method="post" style="float:right;margin-bottom:6px;" action="購入予定.php" method="POST">
                 <input type="hidden" name="csrf" value="<?php echo h($csrf); ?>">
                 <input type="hidden" name="action" value="remove">
                 <input type="hidden" name="id" value="<?php echo h($it['id']); ?>">

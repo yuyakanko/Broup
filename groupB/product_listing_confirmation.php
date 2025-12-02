@@ -21,12 +21,12 @@
                     echo '<div class="carousel-track">';
                         foreach($confirmation as $img){
                             echo '<div class="carousel-slide">';
-                                echo '<img src="',$img,'" alt="画像1">';
+                                echo '<img src="',htmlspecialchars($img),'" alt="画像1">';
                             echo '</div>';
                         }
                     echo '</div>';
                     echo '<div class="iii">';
-                        echo '<span id="current-slide">1</span> / ' . count($confirmation);
+                        echo '<span id="current-slide">1</span> / ' . htmlspecialchars(count($confirmation));
                     echo '</div>';
                     echo '<button class="carousel-button prev">&lt;</button>';
                     echo '<button class="carousel-button next">&gt;</button>';

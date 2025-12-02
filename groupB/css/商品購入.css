@@ -1,0 +1,88 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Noto Sans JP", sans-serif;
+  background-color: #f9fafb;
+  color: #1f2937;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fff68a;
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.main {
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.carousel {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
+.carousel-slide {
+  text-align: center;
+  width: 300px;
+  height: 300px;
+  margin-right: 130px;
+  background-color: #ffffff;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.carousel-slide img {
+  width: 100%;
+  height: 200px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  object-position:center;
+  object-fit: cover;
+}
+
+.carousel-slide p {
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+.confirmation-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.confirmation-text {
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+.homebutton {
+  width: 200px;
+  height: 100px;
+  background-color: blue;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.homebutton:hover {
+  background-color: #0033cc;
+}

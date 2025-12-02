@@ -114,7 +114,7 @@
 <!-- 左：画像 -->
 <div class="left" aria-label="画像アップロード">
 <div class="drop-hint">
-<a href="homePage.html" style="text-decoration:none;color:#666;font-weight:700;">&lt; ホームへ</a><br>
+<a href="homePage.php" style="text-decoration:none;color:#666;font-weight:700;">&lt; ホームへ</a><br>
 画像アイコンタップで画像を選択（最大四枚）
 </div>
 

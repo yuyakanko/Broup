@@ -12,7 +12,7 @@
 <body>
     <?php require "header3.php"?>
     <?php require "データベース.php"?>
-    <a href="#" class="horma">＜ホームへ</a><br>
+    <a href="homePage.php" class="horma">＜ホームへ</a><br>
     <h1>検索結果</h1>
     <?php 
         if(isset($_POST['search'])){
@@ -26,6 +26,22 @@
         <?php
             if(isset($sql)){
                 foreach($sql as $key){
+                    $boo = false;
+                    $lisql=$pdo->prepare("SELECT * FROM buy_information WHERE item_id = ?");
+                    $lisql->execute([$key['item_id']]);
+                    if($lisql->rowCount() > 0){
+                        continue;
+                    }
+                    if(isset($_SESSION['cart'])){
+                        foreach($_SESSION['cart'] as $newkey => $value){
+                            if($key['item_id'] == $value['id']){
+                                $boo = true;
+                            }
+                        }
+                    }
+                    if($boo){
+                        continue;
+                    }
                     $mysql=$pdo->prepare("SELECT * FROM product_image WHERE sort_order = 1 AND item_id = ?");
                     $mysql->execute([$key['item_id']]);
                     $mtsql = $pdo->prepare("SELECT * FROM favorite WHERE item_id = ? AND user_id = ?");
@@ -35,22 +51,22 @@
                     echo '<div class="product-card">';
                         foreach($mysql as $row){
                             echo '<div class="product-image">';
-                                echo '<a href="商品詳細.php?item_id=',$row['item_id'],'">';
-                                    echo '<img src="',$row['product_path'],'">';
+                                echo '<a href="商品詳細.php?item_id=',htmlspecialchars($row['item_id']),'">';
+                                    echo '<img src="',htmlspecialchars($row['product_path']),'">';
                                 echo '</a>';
                             echo '</div>';
                             break;
                         }
-                        echo '<div class="product-price">¥',$key['product_price'],' ';
+                        echo '<div class="product-price">¥',htmlspecialchars($key['product_price']),' ';
                             echo '<span class="heart">';
                                 echo '<button class="favorite-btn" data-item-id="' .htmlspecialchars($key['item_id']) .'">';
-                                    echo '<i class="fa fa-heart '. $boois .'"></i>';
+                                    echo '<i class="fa fa-heart '. htmlspecialchars($boois) .'"></i>';
                                 echo '</button>';
                             echo '</span>';
                         echo '</div>';
                         echo '<div class="product-description">';
                             echo '商品説明';
-                            echo '<p>',$key['product_description'],'</p>';
+                            echo '<p>',htmlspecialchars($key['product_description']),'</p>';
                         echo '</div>';
                     echo '</div>';
                     }

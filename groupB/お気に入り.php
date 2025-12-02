@@ -1,169 +1,70 @@
+<?php session_start();?>
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>お気に入り</title>
-<style>
-  body {
-    font-family: "Meiryo", sans-serif;
-    background-color: #fff8cc;
-    margin: 0;
-    padding: 0;
-  }
-
-  header {
-    background-color: #fff8cc;
-    padding: 10px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  header h1 {
-    margin: 0;
-    font-size: 18px;
-  }
-
-  .search-box {
-    flex: 1;
-    margin: 0 20px;
-  }
-
-  .search-box input {
-    width: 100%;
-    padding: 6px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-  }
-
-  .logout-btn {
-    background-color: red;
-    color: white;
-    border: none;
-    padding: 6px 15px;
-    border-radius: 15px;
-    cursor: pointer;
-  }
-
-  .logout-btn:hover {
-    background-color: #c00;
-  }
-
-  main {
-    background-color: #fff;
-    padding: 20px 40px;
-  }
-
-  .back-link {
-    color: #333;
-    font-size: 14px;
-    text-decoration: none;
-  }
-
-  .back-link:hover {
-    text-decoration: underline;
-  }
-
-  h2 {
-    margin-top: 10px;
-    margin-bottom: 20px;
-  }
-
-  .favorite-item {
-    display: flex;
-    align-items: center;
-    background-color: #f2f2f2;
-    border-radius: 8px;
-    padding: 10px;
-    margin-bottom: 15px;
-  }
-
-  .favorite-item img {
-    width: 100px;
-    height: 100px;
-    background-color: #ccc;
-    border-radius: 5px;
-    object-fit: cover;
-  }
-
-  .info {
-    flex: 1;
-    padding-left: 15px;
-  }
-
-  .info p {
-    margin: 5px 0;
-  }
-
-  .delete-btn {
-    background-color: red;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 10px 15px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-
-  .delete-btn:hover {
-    background-color: #cc0000;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>お気に入り | サクサク</title>
+  <link rel="stylesheet" href="css/お気に入り.css">
+  <link rel="stylesheet" href="css/header1.css">
 </head>
 <body>
+  <?php require "header1.php"?>
+  <?php require "データベース.php"?>
+  <a href="homePage.php" class="back-link">＜ ホームへ</a>
+  <main class="container" role="main">
+    <h1 class="page-title">お気に入り</h1>
+    <?php 
+      $pdo=new PDO($connect,USER,PASS);
 
-<header>
-  <h1>🍥 オタグッズ</h1>
-  <div class="search-box">
-    <input type="text" placeholder="探し物">
-  </div>
-  <button class="logout-btn">ログアウト</button>
-</header>
+      if(isset($_POST['deleteID'])){
+        $deleteID = $_POST['deleteID'];
+        $isql=$pdo->prepare("DELETE FROM favorite WHERE item_id = ?");
+        $isql->execute([$deleteID ]);
+      }
 
-<main>
-  <a href="index.php" class="back-link">＜ ホームへ</a>
+      if(isset($_SESSION['customer'])){
+        $user_id = $_SESSION['customer']['id'];
+        $sql=$pdo->prepare("SELECT * FROM favorite WHERE user_id = ?");
+        $sql->execute([$user_id]);
+        $ite = $sql->fetchAll(PDO::FETCH_ASSOC);
+      }
+    ?>
+    <section class="favorites-list" aria-label="お気に入り商品一覧">
+      <!-- 商品A -->
+       <?php
+        if(isset($ite)){
+          foreach($ite as $newrow){
+            $mysql=$pdo->prepare("SELECT * FROM item_information WHERE item_id = ?");
+            $mysql->execute([$newrow['item_id']]);
+            $favitem = $mysql->fetch();
+          
+            $newsql=$pdo->prepare("SELECT * FROM product_image WHERE item_id = ? AND sort_order = 1");
+            $newsql->execute([$newrow['item_id']]);
+            $oritem = $newsql->fetch();
 
-  <h2>お気に入り</h2>
+            $lisql=$pdo->prepare("SELECT * FROM buy_information WHERE item_id = ?");
+            $lisql->execute([$newrow['item_id']]);
+            if($lisql->rowCount() > 0){
+              continue;
+            }
 
-  <!-- 商品A -->
-  <div class="favorite-item">
-    <img src="noimage.png" alt="商品A">
-    <div class="info">
-      <p>商品A</p>
-      <p>値段（￥500）</p>
-    </div>
-    <form method="post" action="favorite_delete.php">
-      <input type="hidden" name="id" value="1">
-      <button class="delete-btn">削除</button>
-    </form>
-  </div>
-
-  <!-- 商品B -->
-  <div class="favorite-item">
-    <img src="noimage.png" alt="商品B">
-    <div class="info">
-      <p>商品B</p>
-      <p>値段（￥100）</p>
-    </div>
-    <form method="post" action="favorite_delete.php">
-      <input type="hidden" name="id" value="2">
-      <button class="delete-btn">削除</button>
-    </form>
-  </div>
-
-  <!-- 商品C -->
-  <div class="favorite-item">
-    <img src="noimage.png" alt="商品C">
-    <div class="info">
-      <p>商品C</p>
-      <p>値段（￥600）</p>
-    </div>
-    <form method="post" action="favorite_delete.php">
-      <input type="hidden" name="id" value="3">
-      <button class="delete-btn">削除</button>
-    </form>
-  </div>
-</main>
-
+            echo '<article class="favorite-item">';
+              echo '<img src="'.htmlspecialchars($oritem['product_path']).'" alt="'.htmlspecialchars($favitem['product_name']).'の画像" class="item-thumb" width="200" height="200" loading="lazy"/>';
+              echo '<div class="item-info">';
+                echo '<h2 class="item-name">'.htmlspecialchars($favitem['product_name']).'</h2>';
+                echo '<p class="item-price">値段（¥'.htmlspecialchars($favitem['product_price']).'）</p>';
+              echo '</div>';
+              echo '<form action="お気に入り.php" method="POST">';
+                echo '<input type="hidden" name="deleteID" value="'.htmlspecialchars($favitem['item_id']).'">';
+                echo '<button class="delete-btn" type="submit" aria-label="商品Aを削除">削除</button>';
+              echo '</form>';
+            echo '</article>';
+          }
+        }
+      ?>
+    </section>
+  </main>
 </body>
 </html>

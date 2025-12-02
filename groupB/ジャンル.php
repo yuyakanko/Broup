@@ -8,19 +8,30 @@ require 'データベース.php';
 $is_logged_in = isset($_SESSION['customer']);
 $user_name = '';
 
-if ($is_logged_in) {
-    // ログインしている場合、セッションからユーザー名を取得
-    $user_name = $_SESSION['customer']['name'];
-}
+if(isset($_GET['genre_id'])){
+    $genre_id = $_GET['genre_id'];
+    $pdo=new PDO($connect, USER, PASS);
+    $insql=$pdo->prepare("SELECT * FROM genre WHERE genre_id = ?");
+    $insql->execute([$genre_id]);
+    $genre = $insql->fetch();
 
-// ★★★ 修正: header3.php の読み込みを <head> より前に記述するのをやめました ★★★
+}
 ?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>オタクグッズフリマ</title>
+    <title>
+        <?php 
+            if($genre){
+                echo htmlspecialchars($genre['genre_name']).'画面';
+            }
+            else{
+                echo '各ジャンル画面';
+            } 
+        ?>
+    </title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.0/css/all.css">
@@ -29,24 +40,22 @@ if ($is_logged_in) {
     <link rel="stylesheet" href="css/homePage.css?ver=1">
 </head>
 <body>
+
     <?php require 'header3.php'; ?>
     <div id="wrapper">
-        <div class="logo-banner-wrapper">
-            <div class="logo-banner-image"></div> 
-        </div>
-
         <main class="container">
-            <?php if ($is_logged_in): ?>
-                <h3 class="welcome-message">ようこそ、<?php echo htmlspecialchars($user_name); ?>さん！</h3>
-            <?php endif; ?>
-
-            <h2 class="section-title">おすすめ</h2>
+            <h2 class="section-title">
+                <?php 
+                    if($genre){
+                        echo $genre['genre_name'];
+                    }
+                ?>
+            </h2>
             <div class="product-grid">
                 <?php 
-                $pdo=new PDO($connect, USER, PASS);
                 $customerid = $_SESSION['customer']['id'];
-                $sql=$pdo->prepare('SELECT * FROM item_information WHERE user_id = ? ORDER BY view_times DESC');
-                $sql->execute([$customerid]);
+                $sql=$pdo->prepare('SELECT * FROM item_information WHERE user_id = ? AND genre_id = ?');
+                $sql->execute([$customerid,$genre_id]);
                 foreach ($sql as $row) {
                     $boo = false;
                     $lisql=$pdo->prepare("SELECT * FROM buy_information WHERE item_id = ?");
@@ -74,13 +83,13 @@ if ($is_logged_in) {
                     $boois = $isboo ? 'fas' : 'far';
 
                     echo '<div class="product-item">';
-                    echo '<a href="商品詳細.php?item_id=',$row['item_id'],'">';
+                    echo '<a href="商品詳細.php?item_id=',htmlspecialchars($row['item_id']),'">';
                     echo '<div class="product-image"><img alt="商品画像" src="' . htmlspecialchars($item['product_path']) . '"></div>';
                     echo '</a>';
                         echo '<div class="product-info">';
                             echo '<span class="price">￥  '. htmlspecialchars($row['product_price']) .'</span>';
                             echo '<button class="favorite-btn" data-item-id="' .htmlspecialchars($row['item_id']) .'">';
-                                echo '<i class=" '.$boois.' fa-heart"></i>';
+                                echo '<i class=" '.htmlspecialchars($boois).' fa-heart"></i>';
                             echo '</button>';
                             echo '<p class="description">'. htmlspecialchars($row['product_description']) .'</p>';
                         echo '</div>';

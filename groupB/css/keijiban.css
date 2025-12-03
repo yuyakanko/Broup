@@ -1,0 +1,194 @@
+/* 全体のリセットと基本設定 */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0; /* 背景色を薄いグレーに設定 */
+    margin: 0;
+    padding: 20px;
+}
+
+/* --- パンくずリストのスタイル --- */
+.breadcrumbs {
+    margin-top: 50px;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.breadcrumbs a {
+    color: #0000FF; /* リンクの色を青に */
+    text-decoration: none;
+}
+
+.breadcrumbs span {
+    color: #666;
+    margin: 0 5px;
+}
+
+.breadcrumbs .current-page {
+    color: #000; /* 現在地の文字色は黒 */
+    font-weight: bold;
+}
+
+/* --- メインコンテンツ（フォーム）のスタイル --- */
+.main-content-wrapper {
+    /* 画像のグレーの枠線を再現 */
+    background-color: #EAEAEA; /* 明るいグレーの背景 */
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+
+/* --- 画像アップロード/送信エリアのスタイル --- */
+.image-upload-area {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 50px; /* 非常に丸い形状を再現 */
+    padding: 5px 10px;
+    background-color: white;
+    margin-top: 30px; /* 上部のフォームとの間にスペース */
+}
+
+.image-upload-area input[type="text"] {
+    flex-grow: 1; /* 残りのスペースを全て占める */
+    border: none;
+    outline: none;
+    padding: 5px;
+    font-size: 16px;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.send-icon {
+    /* 送信アイコン（三角）は少し右に詰める */
+    padding-right: 0;
+}
+
+/* --- 投稿一覧のスタイル --- */
+.posts-list {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    /* 固定高さにして縦スクロールを有効にする */
+    max-height: 400px; /* 必要に応じて値を調整 */
+    overflow-y: auto;
+    padding-right: 6px; /* スクロールバーが被らないよう余白を確保 */
+    -webkit-overflow-scrolling: touch; /* モバイルでスムーズスクロール */
+}
+
+.post {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px 14px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+
+.post-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: #666;
+}
+
+.post-id {
+    font-weight: 600;
+    color: #333;
+}
+
+.post-date {
+    font-size: 12px;
+    color: #999;
+}
+
+.post-content {
+    margin-top: 8px;
+    font-size: 15px;
+    color: #222;
+    white-space: pre-wrap; /* 改行を保持 */
+    word-break: break-word;
+}
+
+.post-image {
+    margin-top: 10px;
+}
+
+.post-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+    display: block;
+}
+
+/* スクロールバーの見た目調整（WebKit系） */
+.posts-list::-webkit-scrollbar {
+    width: 10px;
+}
+.posts-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+.posts-list::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.12);
+    border-radius: 6px;
+}
+
+.no-posts {
+    color: #666;
+    padding: 10px;
+}
+
+/* --- 投稿フォーム調整 --- */
+.account-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.image-upload-area {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 50px;
+    padding: 6px 10px;
+    background-color: #fff;
+    margin-top: 14px;
+    gap: 8px;
+}
+
+.image-upload-area input[type="text"] {
+    flex: 1 1 auto;
+    border: none;
+    outline: none;
+    padding: 8px 10px;
+    font-size: 15px;
+    background: transparent;
+}
+
+.image-upload-area input[type="file"] {
+    flex: 0 0 auto;
+    font-size: 13px;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 6px;
+}
+
+/* レスポンシブ調整 */
+@media (max-width: 480px) {
+    .main-content-wrapper {
+        padding: 16px;
+    }
+    .post-content { font-size: 14px; }
+    .image-upload-area input[type="text"] { font-size: 14px; }
+}

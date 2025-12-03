@@ -1,9 +1,4 @@
-﻿<?php
-// 1. セッションを開始
-session_start();
-require 'データベース.php';
-
-
+<?php 
 // 2. ログイン状態の確認
 $is_logged_in = isset($_SESSION['customer']);
 $user_name = '';
@@ -55,6 +50,7 @@ if ($is_logged_in) {
     <div class="main-content-wrapper">
         <?php
             // ジャンルID を安全に取得
+            require 'データベース.php';
             $genre_id = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id']) : 0;
 
             // PDO を作成して bbs テーブルから投稿を取得
@@ -67,6 +63,7 @@ if ($is_logged_in) {
                 $stmt = $pdo->prepare('SELECT * FROM bbs WHERE genre_id = :gid ORDER BY bbs_id DESC');
                 $stmt->execute([':gid' => $genre_id]);
                 $posts = $stmt->fetchAll();
+
             } catch (Exception $e) {
                 // エラー時は空リストにして表示を続行
                 $posts = [];
@@ -82,8 +79,13 @@ if ($is_logged_in) {
                 <?php else: ?>
                     <?php foreach ($posts as $post): ?>
                         <div class="post">
+                            <?php
+                                $sql = $pdo->prepare("SELECT * FROM user WHERE user_id = ?");
+                                $sql->execute([$post['user_id']]);
+                                $item = $sql->fetch();
+                            ?>
                             <div class="post-meta">
-                                <span class="post-id"><?php echo htmlspecialchars($post['bbs_id']); ?></span>
+                                <span class="post-id"><?php echo htmlspecialchars($item['account_name']); ?></span>
                                 <span class="post-date"><?php echo htmlspecialchars($post['date']); ?></span>
                             </div>
                             <div class="post-content"><?php echo nl2br(htmlspecialchars($post['post_content'])); ?></div>

@@ -7,14 +7,24 @@ require 'データベース.php';
 // 2. ログイン状態の確認
 $is_logged_in = isset($_SESSION['customer']);
 $user_name = '';
-
+$genre = null;
 if(isset($_GET['genre_id'])){
     $genre_id = $_GET['genre_id'];
     $pdo=new PDO($connect, USER, PASS);
     $insql=$pdo->prepare("SELECT * FROM genre WHERE genre_id = ?");
     $insql->execute([$genre_id]);
     $genre = $insql->fetch();
-
+}
+else if(isset($_GET['id'])) {
+    $genre_id = intval($_GET['id']);
+    $pdo=new PDO($connect, USER, PASS);
+    $insql=$pdo->prepare("SELECT * FROM genre WHERE genre_id = ?");
+    $insql->execute([$genre_id]);
+    $genre = $insql->fetch();
+} 
+else{
+    echo 'ジャンルIDが指定されていません。';
+    exit;
 }
 ?>
 <!DOCTYPE html>
@@ -99,10 +109,18 @@ if(isset($_GET['genre_id'])){
             </div>
             <h2 class="section-title board-title">掲示板</h2>
             <div class="board-grid">
-                <div class="board-item">ゲーム</div>
-                <div class="board-item">アニメ</div>
-                <div class="board-item">アイドル</div>
-                <div class="board-item">ブランド</div>
+                <a href="keijiban.php?id=<?php echo $genre['genre_id'];?>">
+                    <div class="board-item">
+                        <?php 
+                            if($genre){
+                                echo htmlspecialchars($genre['genre_name']).'画面';
+                            }
+                            else{
+                                echo '各ジャンル画面';
+                            } 
+                        ?>
+                    </div>
+                </a>
             </div>
         </main>
     </div>

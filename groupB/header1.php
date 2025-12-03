@@ -22,14 +22,18 @@ $button_link = 'logout.php'; // ログアウトボタンは logout.php を指す
     		</div>
     	</div>
         <div class="right-items">
-       		<div class="image">
-           		<img src="image/image.png">
-           	</div>
+       		<?php if ($is_logged_in): ?>
+            <div class="image">
+        		<a href="プロフィール.php">
+            		<img src="image/image.png" >
+                </a>
+            </div>
         	<div class="maindiv">
-           		<form action="<?php echo $button_link; ?>" method="POST">
+           		<a href="<?php echo $button_link; ?>">
            			<button class="button">ログアウト</button>
-           		</form>
+				</a>
         	</div>
+			<?php endif; ?>
     	</div>
     </div>
 </nav>

@@ -42,7 +42,7 @@ if ($is_logged_in) {
     <div class="breadcrumbs">
         <a href="homePage.php">ホーム</a>
         <span>></span>
-        <a href="genre.php"><?php echo htmlspecialchars($board_id);?></a>
+        <a href="ジャンル.php?id=<?php echo $_GET['id'];?>"><?php echo htmlspecialchars($board_id);?></a>
         <span>></span>
         <span class="current-page">掲示板</span>
     </div>

@@ -31,6 +31,7 @@
         }
     ?>
     <?php require 'header1.php'; ?>
+    <a href="homePage.php" class="hoa">＜ホームへ</a>
     <main>
         <div class="profile-container">
             <h2 class="profile-title">プロフィール</h2>
@@ -78,3 +79,4 @@
   </main>
 </body>
 </html>
+

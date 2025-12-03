@@ -92,10 +92,10 @@ if ($is_logged_in) {
             </div>
             <h2 class="section-title board-title">掲示板</h2>
             <div class="board-grid">
-                <div class="board-item">ゲーム</div>
-                <div class="board-item">アニメ</div>
-                <div class="board-item">アイドル</div>
-                <div class="board-item">ブランド</div>
+                <a href="keijiban.php?id=1"><div class="board-item">ゲーム</div></a>
+                <a href="keijiban.php?id=2"><div class="board-item">アニメ</div></a>
+                <a href="keijiban.php?id=3"><div class="board-item">アイドル</div></a>
+                <a href="keijiban.php?id=4"><div class="board-item">ブランド</div></a>
             </div>
         </main>
     </div>

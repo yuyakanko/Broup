@@ -165,7 +165,7 @@ function h($v){ return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
       <div class="breadcrumb"><a href="homePage.php" class="hoa">&lt; ホームへ</a></div>
 
       <form class="nextwrap" action="商品購入.php" method="POST">
-        <button class="next" type="submit">購入手続きへ</button>
+        <button class="next" type="submit">購入確定する</button>
       </form>
 
       <div class="list">

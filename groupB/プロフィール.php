@@ -55,7 +55,7 @@
                         <div class="form-group">
                             <label for="password">パスワード</label>
                             <input type="password" id="password" name="password" 
-                            value="<?php if(isset($$user)){echo htmlspecialchars($$user['password']);}?>">
+                            value="<?php if(isset($user)){echo htmlspecialchars($user['password']);}?>">
                             <button type="button" class="show-password">ログイン時に表示にします</button>
                         </div>
 
@@ -79,4 +79,3 @@
   </main>
 </body>
 </html>
-

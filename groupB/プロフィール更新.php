@@ -10,18 +10,19 @@
     elseif(empty($_POST['account_name'])) {
         $error_message = '*エラーメッセージ';
     }
-    elseif(!is_numeric($_POST['postal_code'])) {
+    else if(!preg_match('/^\d{3}-?\d{4}$/', $_POST['postal_code'])){
         $error_message = '*エラーメッセージ';
     }
-    else if(strlen($_POST['account_name'] > 30)){
+    else if(strlen($_POST['password']) > 255){
+        $error_message = '*エラーメッセージ';  
+    }
+    else if(strlen($_POST['email']) > 254){
         $error_message = '*エラーメッセージ';
     }
-    else if(strlen($_POST['password'] > 255)){
+    else if(strlen($_POST['account_name']) > 30){
         $error_message = '*エラーメッセージ';
     }
-    else if(strlen($_POST['email'] > 254)){
-        $error_message = '*エラーメッセージ';
-    }
+
 
 
     // エラーがあればセッションに保存して元の画面に戻す
